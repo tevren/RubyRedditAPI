@@ -6,7 +6,7 @@ module Reddit
     include HTTParty
 
     attr_reader :last_action, :debug
-    base_uri "www.reddit.com"
+    base_uri "https://www.reddit.com"
     class << self; attr_reader :cookie, :modhash, :user_id, :user, :throttle_duration end
 
     @throttle_duration = 1.0
@@ -23,7 +23,7 @@ module Reddit
     # Login to Reddit and capture the cookie
     # @return [Boolean] Login success or failure
     def login
-      capture_session(self.class.post( "/api/login", {:body => {:user => @user, :passwd => @password}, :debug_output => @debug} ) )
+      capture_session(self.class.post( "/api/login", {:body => {:api_type => 'json', :user => @user, :passwd => @password}, :debug_output => @debug}))
       logged_in?
     end
 
@@ -98,9 +98,9 @@ module Reddit
     end
 
     def capture_session(response)
-      cookies = response.headers["set-cookie"]
-      Reddit::Base.instance_variable_set("@cookie", cookies)
+      Reddit::Base.instance_variable_set("@cookie", response.parsed_response['json']['data']['cookie'])
       Reddit::Base.instance_variable_set("@user",   @user)
+      Reddit::Base.instance_variable_set("@modhash", response.parsed_response['json']['data']['modhash'])
     end
 
     def capture_user_id
