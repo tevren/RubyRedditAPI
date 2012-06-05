@@ -27,6 +27,14 @@ module Reddit
       read("/r/#{subreddit}.json", options )
     end
 
+    # Return user's subscribed subreddits, requires a logged_in user
+    # @return [Array<Reddt::Submission>]
+    def myreddits
+      if logged_in?
+        read("/reddits/mine.json")
+      end
+    end
+
     # Search reddit
     # @param [String, Hash] Search terms and options
     # @example
