@@ -9,7 +9,7 @@ module Reddit
     base_uri "https://www.reddit.com"
     class << self; attr_reader :cookie, :modhash, :user_id, :user, :throttle_duration end
 
-    @throttle_duration = 1.0
+    @throttle_duration = 0.001
 
     def initialize(options={})
       @debug    = StringIO.new
