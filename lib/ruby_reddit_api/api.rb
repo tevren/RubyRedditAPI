@@ -24,7 +24,12 @@ module Reddit
       if options[:limit]
         options.merge!({:query => {:limit => options[:limit]}})
       end
-      read("/r/#{subreddit}.json", options )
+      if options[:section].to_s.match(/(new|hot|controversial|top|saved)/)
+        section = "/#{options[:section]}"
+        read("/r/#{subreddit}#{section}.json", options )
+      else
+        read("/r/#{subreddit}.json", options )
+      end
     end
 
     # Return user's subscribed subreddits, requires a logged_in user
