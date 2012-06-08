@@ -19,16 +19,20 @@ module Reddit
     # @param [String] Subreddit to browse
     # @return [Array<Reddit::Submission>]
     def browse(subreddit, options={})
-      subreddit = sanitize_subreddit(subreddit)
-      options.merge! :handler => "Submission"
-      if options[:limit]
-        options.merge!({:query => {:limit => options[:limit]}})
-      end
-      if options[:section].to_s.match(/(new|hot|controversial|top|saved)/)
-        section = "/#{options[:section]}"
-        read("/r/#{subreddit}#{section}.json", options )
+      unless subreddit.blank?
+        subreddit = sanitize_subreddit(subreddit)
+        options.merge! :handler => "Submission"
+        if options[:limit]
+          options.merge!({:query => {:limit => options[:limit]}})
+        end
+        if options[:section].to_s.match(/(new|hot|controversial|top|saved)/)
+          section = "/#{options[:section]}"
+          read("/r/#{subreddit}#{section}.json", options )
+        else
+          read("/r/#{subreddit}.json", options )
+        end
       else
-        read("/r/#{subreddit}.json", options )
+          read("/.json", options )
       end
     end
 
