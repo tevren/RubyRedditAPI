@@ -9,7 +9,7 @@ module Reddit
     base_uri "https://www.reddit.com"
     class << self; attr_reader :cookie, :modhash, :user_id, :user, :throttle_duration end
 
-    @throttle_duration = 0.001
+    @throttle_duration = 1.0
 
     def initialize(options={})
       @debug    = StringIO.new
@@ -23,7 +23,7 @@ module Reddit
     # Login to Reddit and capture the cookie
     # @return [Boolean] Login success or failure
     def login
-      capture_session(self.class.post( "/api/login", {:body => {:user => @user, :passwd => @password}, :debug_output => @debug}))
+      capture_session(self.class.post( "/api/login", {:body => {:api_type => 'json', :user => @user, :passwd => @password}, :debug_output => @debug}))
       logged_in?
     end
 
@@ -101,6 +101,8 @@ module Reddit
       cookies = response.headers["set-cookie"]
       Reddit::Base.instance_variable_set("@cookie", cookies)
       Reddit::Base.instance_variable_set("@user",   @user)
+      data = response["json"]["data"]
+      Reddit::Base.instance_variable_set("@modhash", data["modhash"]) # Needed for api calls
     end
 
     def capture_user_id

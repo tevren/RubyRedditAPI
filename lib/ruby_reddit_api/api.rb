@@ -25,22 +25,31 @@ module Reddit
         if options[:limit]
           options.merge!({:query => {:limit => options[:limit]}})
         end
-        if options[:section].to_s.match(/(new|hot|controversial|top|saved)/)
-          section = "/#{options[:section]}"
-          read("/r/#{subreddit}#{section}.json", options )
-        else
-          read("/r/#{subreddit}.json", options )
-        end
+        read("/r/#{subreddit}.json", options )
       else
-          read("/.json", options )
+        options.merge! :handler => "Submission"
+        if options[:limit]
+          options.merge!({:query => {:limit => options[:limit]}})
+        end
+        read("/.json", options )
+      end
+    end
+
+    def saved(options={})
+      if user?
+        options.merge! :handler => "Submission"
+        if options[:limit]
+          options.merge!({:query => {:limit => options[:limit]}})
+        end
+        read("/user/#{user.to_s}/saved/.json", options )
       end
     end
 
     # Return user's subscribed subreddits, requires a logged_in user
     # @return [Array<Reddt::Submission>]
-    def myreddits
+    def mine(options={})
       if logged_in?
-        read("/reddits/mine.json")
+        read("/reddits/mine.json", options)
       end
     end
 
