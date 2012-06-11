@@ -102,7 +102,9 @@ module Reddit
       Reddit::Base.instance_variable_set("@cookie", cookies)
       Reddit::Base.instance_variable_set("@user",   @user)
       data = response["json"]["data"]
-      Reddit::Base.instance_variable_set("@modhash", data["modhash"]) # Needed for api calls
+      unless data.nil?
+        Reddit::Base.instance_variable_set("@modhash", data["modhash"]) # Needed for api calls
+      end
     end
 
     def capture_user_id
