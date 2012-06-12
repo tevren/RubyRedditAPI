@@ -49,6 +49,9 @@ module Reddit
     # @return [Array<Reddt::Submission>]
     def mine(options={})
       if logged_in?
+        if options[:limit]
+          options.merge!({:query => {:limit => options[:limit]}})
+        end
         read("/reddits/mine.json", options)
       end
     end
