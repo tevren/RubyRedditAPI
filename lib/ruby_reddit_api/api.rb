@@ -36,7 +36,7 @@ module Reddit
     end
 
     def saved(options={})
-      if user?
+      if logged_in?
         options.merge! :handler => "Submission"
         if options[:limit]
           options.merge!({:query => {:limit => options[:limit]}})
