@@ -5,7 +5,7 @@ module Reddit
     attr_accessor :user, :password
     attr_reader :last_action, :debug
 
-    def initialize(user=nil,password=nil, options={})
+    def initialize(user=nil,password=nil,options={})
       @user     = user
       @password = password
       @debug    = StringIO.new

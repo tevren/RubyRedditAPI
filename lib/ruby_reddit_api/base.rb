@@ -6,7 +6,7 @@ module Reddit
     include HTTParty
 
     attr_reader :last_action, :debug
-    base_uri "https://www.reddit.com"
+    base_uri "https://api.reddit.com"
     class << self; attr_reader :cookie, :modhash, :user_id, :user, :throttle_duration end
 
     @throttle_duration = 1.0
@@ -80,7 +80,12 @@ module Reddit
         @debug.rewind
         verb      = (options[:verb] || "get")
         param_key = (verb == "get") ? :query : :body
-        resp      = self.class.send( verb, url, {param_key => (options[param_key] || {}), :headers => base_headers, :debug_output => @debug})
+        unless options[:cookie]
+          resp      = self.class.send( verb, url, {param_key => (options[param_key] || {}), :headers => base_headers, :debug_output => @debug})
+        else
+#          raise options[:cookie].to_s
+          resp      = self.class.send( verb, url, {param_key => (options[param_key] || {}), :headers => {'Cookie' => options[:cookie], 'user_agent' => user_agent}, :debug_output => @debug})
+        end
         if valid_response?(resp)
           @last_action = Time.now
           klass = Reddit.const_get(options[:handler] || "Submission")
