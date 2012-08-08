@@ -48,7 +48,7 @@ module Reddit
     # Return user's subscribed subreddits, requires a logged_in user
     # @return [Array<Reddt::Submission>]
     def mine(options={})
-      if logged_in?
+      if logged_in? || options[:cookie]
         if options[:limit]
           options.merge!({:query => {:limit => options[:limit]}})
         end
