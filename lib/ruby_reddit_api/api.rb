@@ -36,12 +36,17 @@ module Reddit
     end
 
     def saved(options={})
-      if logged_in?
+      if logged_in? && !user.nil?
         options.merge! :handler => "Submission"
         if options[:limit]
           options.merge!({:query => {:limit => options[:limit]}})
         end
         read("/user/#{user.to_s}/saved/.json", options )
+      elsif options[:cookie] && options[:user]
+        if options[:limit]
+          options.merge!({:query => {:limit => options[:limit]}})
+        end
+        read("/user/#{options[:user]}/saved/.json", options )
       end
     end
 
