@@ -6,7 +6,7 @@ module Reddit
     include HTTParty
 
     attr_reader :last_action, :debug
-    base_uri "https://api.reddit.com"
+    base_uri "https://ssl.reddit.com"
     class << self; attr_reader :cookie, :modhash, :user_id, :user, :throttle_duration end
 
     @throttle_duration = 1.0
