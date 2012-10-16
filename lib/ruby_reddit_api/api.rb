@@ -58,11 +58,6 @@ module Reddit
           options.merge!({:query => {:limit => options[:limit]}})
         end
         read("/reddits/mine.json", options)
-      else
-        if options[:limit]
-          options.merge!({:query => {:limit => options[:limit]}})
-        end
-        read("/reddits.json", options)
       end
     end
 
