@@ -50,7 +50,7 @@ module Reddit
       end
     end
 
-    # Return user's subscribed subreddits, requires a logged_in user
+    # Return user's subscribed subreddits, if no user exists, returns the default list of subreddits
     # @return [Array<Reddt::Submission>]
     def mine(options={})
       if logged_in? || options[:cookie]
@@ -58,6 +58,11 @@ module Reddit
           options.merge!({:query => {:limit => options[:limit]}})
         end
         read("/reddits/mine.json", options)
+      else
+        if options[:limit]
+          options.merge!({:query => {:limit => options[:limit]}})
+        end
+        read("/reddits.json", options)
       end
     end
 
