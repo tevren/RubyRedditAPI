@@ -22,7 +22,7 @@ module Reddit
       query = Hash.new
       options.merge! :handler => "Submission"
       options.each do |k,v|
-        if k.match(/limit|before|after/)
+        if k.match(/limit|before|after|section/)
           query[k.to_sym] = v
         end
       end
@@ -39,7 +39,7 @@ module Reddit
       query = Hash.new
       options.merge! :handler => "Submission"
       options.each do |k,v|
-        if k.match(/limit|before|after/)
+        if k.match(/limit|before|after|section/)
           query[k.to_sym] = v
         end
       end
@@ -53,15 +53,15 @@ module Reddit
     # Return user's subscribed subreddits, if no user exists, returns the default list of subreddits
     # @return [Array<Reddt::Submission>]
     def mine(options={})
-      query = Hash.new
-      options.each do |k,v|
-        if k.match(/limit|before|after/)
-          query[k.to_sym] = v
-        end
-      end
       if logged_in? || options[:cookie]
+        if options[:limit]
+          options.merge!({:query => {:limit => options[:limit]}})
+        end
         read("/reddits/mine.json", options)
       else
+        if options[:limit]
+          options.merge!({:query => {:limit => options[:limit]}})
+        end
         read("/reddits.json", options)
       end
     end
