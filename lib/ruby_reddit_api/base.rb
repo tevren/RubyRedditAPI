@@ -83,7 +83,6 @@ module Reddit
         unless options[:cookie]
           resp      = self.class.send( verb, url, {param_key => (options[param_key] || {}), :headers => base_headers, :debug_output => @debug})
         else
-#          raise options[:cookie].to_s
           resp      = self.class.send( verb, url, {param_key => (options[param_key] || {}), :headers => {'Cookie' => options[:cookie], 'user_agent' => user_agent}, :debug_output => @debug})
         end
         if valid_response?(resp)

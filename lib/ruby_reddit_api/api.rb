@@ -19,33 +19,33 @@ module Reddit
     # @param [String] Subreddit to browse
     # @return [Array<Reddit::Submission>]
     def browse(subreddit, options={})
-      unless subreddit.blank?
-        subreddit = sanitize_subreddit(subreddit)
-        options.merge! :handler => "Submission"
-        if options[:limit]
-          options.merge!({:query => {:limit => options[:limit]}})
+      query = Hash.new
+      options.merge! :handler => "Submission"
+      options.each do |k,v|
+        if k.match(/limit|before|after/)
+          query[k.to_sym] = v
         end
+      end
+      options.merge!({:query => query})
+      unless subreddit.blank?
+        subreddit = sanitize_subreddit(subreddit)        
         read("/r/#{subreddit}.json", options )
       else
-        options.merge! :handler => "Submission"
-        if options[:limit]
-          options.merge!({:query => {:limit => options[:limit]}})
-        end
         read("/.json", options )
       end
     end
 
     def saved(options={})
-      if logged_in? && !user.nil?
-        options.merge! :handler => "Submission"
-        if options[:limit]
-          options.merge!({:query => {:limit => options[:limit]}})
+      query = Hash.new
+      options.merge! :handler => "Submission"
+      options.each do |k,v|
+        if k.match(/limit|before|after/)
+          query[k.to_sym] = v
         end
+      end
+      if logged_in? && !user.nil?
         read("/user/#{user.to_s}/saved/.json", options )
       elsif options[:cookie] && options[:user]
-        if options[:limit]
-          options.merge!({:query => {:limit => options[:limit]}})
-        end
         read("/user/#{options[:user]}/saved/.json", options )
       end
     end
@@ -53,15 +53,15 @@ module Reddit
     # Return user's subscribed subreddits, if no user exists, returns the default list of subreddits
     # @return [Array<Reddt::Submission>]
     def mine(options={})
-      if logged_in? || options[:cookie]
-        if options[:limit]
-          options.merge!({:query => {:limit => options[:limit]}})
+      query = Hash.new
+      options.each do |k,v|
+        if k.match(/limit|before|after/)
+          query[k.to_sym] = v
         end
+      end
+      if logged_in? || options[:cookie]
         read("/reddits/mine.json", options)
       else
-        if options[:limit]
-          options.merge!({:query => {:limit => options[:limit]}})
-        end
         read("/reddits.json", options)
       end
     end
