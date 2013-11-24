@@ -27,7 +27,7 @@ module Reddit
         end
       end
       options.merge!({:query => query})
-      unless subreddit.blank?
+      unless subreddit.empty? || subreddit.nil?
         subreddit = sanitize_subreddit(subreddit)        
         read("/r/#{subreddit}.json", options )
       else
